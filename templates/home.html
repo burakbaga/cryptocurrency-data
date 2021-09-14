@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<script>
+  $(document).ready(function() {
+    $("#add_crpyto").click(function(){
+      $('.ui.modal').modal('show');
+    })
+
+    $("#save").click(function(){
+      var symbols = $("#symbols").val();
+      console.log(symbols);
+
+      var stockSymbols = symbols.split("\n")
+      console.log(stockSymbols)
+      for (var i=0; i < stockSymbols.length; ++i){
+        console.log(stockSymbols[i]);
+
+        $.ajax({
+          url : "/crypto",
+          type :"POST",
+          contentType: "application/json",
+          data : JSON.stringify({"symbol": stockSymbols[i]}),
+          dataType:"json"
+        })
+      }
+      $(".ui.modal").modal("hide");
+    })
+    
+  });
+</script>
+
+<div>  <button id="add_crpyto" class="ui button"> Add Cryptocurrency </button></div>
+
+<table class="ui celled table">
+    <thead>
+      <tr><th>Symbol</th>
+      <th>Open</th>
+      <th>High</th>
+      <th>Low</th>
+      <th>Close</th>
+      <th>Volume</th>
+
+    </tr></thead>
+    <tbody>
+      {% for crypto in cryptoes %}
+      <tr>
+        <td >{{crypto.symbol}}</td>
+        <td >{{crypto.open}}</td>
+        <td >{{crypto.high}}</td>
+        <td >{{crypto.low}}</td>
+        <td >{{crypto.close}}</td>
+        <td >{{crypto.volume}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div class="ui modal">
+    <i class="close icon"></i>
+    <div class="header">
+        Add Crypto Symbol
+    </div>
+    <div class="content">
+      <div class="ui form">
+        <div class="field">
+          <label>Enter Crypto Symbols</label>
+          <textarea id="symbols" ></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      
+      <div id ="save" class="ui positive right labeled icon button">
+        Add Symbols
+        <i class="plus icon"></i>
+      </div>
+    </div>
+  </div>  
+{% endblock %}
